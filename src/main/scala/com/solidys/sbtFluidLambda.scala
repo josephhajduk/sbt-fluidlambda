@@ -9,8 +9,10 @@ import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.lambda.{AWSLambdaClient, model}
 import com.amazonaws.services.lambda.model.{CreateFunctionRequest, FunctionCode, UpdateFunctionCodeRequest}
 
-object sbtFluidLambda extends Plugin
+object sbtFluidLambda extends AutoPlugin
 {
+
+  //override def requires = SbtJsTaskPlugin
 
   // from scala.js plugin
   val fullOptJS = TaskKey[Attributed[File]]("fullOptJS",
@@ -20,7 +22,6 @@ object sbtFluidLambda extends Plugin
 
   // from assembly
   val assembly  = taskKey[File]("Builds a deployable fat jar.")
-
 
   val createLambda = TaskKey[Unit]("Creates an amazon lambda for the given project")
   val updateLambda = TaskKey[Unit]("Updates the code for a lambda if the definition hasn't changed")
@@ -35,7 +36,7 @@ object sbtFluidLambda extends Plugin
   val lambdaAwsRegion = SettingKey[String]("AWS region to deploy to")
   val lambdaHandler = SettingKey[String]("handler object")
 
-  val defaultSettings = Seq(
+  override lazy val projectSettings = Seq(
     prepareNodePayload in Compile <<= (fullOptJS in Compile, packageJSDependencies in Compile, target) map {
       (jsFile, depsFile, tf) =>
 

@@ -11,17 +11,14 @@ import com.amazonaws.services.lambda.model.{CreateFunctionRequest, FunctionCode,
 
 object sbtFluidLambda extends AutoPlugin
 {
-
-  //override def requires = SbtJsTaskPlugin
+  override def requires = org.scalajs.sbtplugin.ScalaJSPlugin && sbtassembly.AssemblyPlugin
 
   // from scala.js plugin
-  val fullOptJS = TaskKey[Attributed[File]]("fullOptJS",
-    "Link all compiled JavaScript into a single file and fully optimize")
-  val packageJSDependencies = TaskKey[File]("packageJSDependencies",
-    "Packages all dependencies of the preLink classpath in a single file.")
+  val fullOptJS =  org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.fullOptJS
+  val packageJSDependencies = org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.packageJSDependencies
 
   // from assembly
-  val assembly  = taskKey[File]("Builds a deployable fat jar.")
+  val assembly  = sbtassembly.AssemblyKeys.assembly
 
   val createLambda = TaskKey[Unit]("Creates an amazon lambda for the given project")
   val updateLambda = TaskKey[Unit]("Updates the code for a lambda if the definition hasn't changed")
